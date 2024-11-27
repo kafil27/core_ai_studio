@@ -1,15 +1,17 @@
 // screens/ImageScreen.jsx
 
-// Import necessary libraries and components from React and React Native
-import React from 'react';
-import { View } from 'react-native';
-import ImageGenerator from '../components/ImageGenerator';
+import React, { useContext } from 'react';
+import { View, Text } from 'react-native';
+import { ThemeContext } from '../context/ThemeContext';
+import HomeScreenStyles from '../styles/HomeScreenStyles';
 
 const ImageScreen = () => {
+  const { isDarkMode } = useContext(ThemeContext);
+  const styles = HomeScreenStyles(isDarkMode);
+
   return (
-    <View>
-      {/* ImageGenerator component for generating images */}
-      <ImageGenerator />
+    <View style={styles.container}>
+      <Text style={styles.greetingText}>This is the Image Screen</Text>
     </View>
   );
 };

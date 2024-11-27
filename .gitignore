@@ -16,6 +16,8 @@ build/
 dist/
 .expo/
 web-build/
+/ios
+/android
 
 # IDE specific files
 .idea/

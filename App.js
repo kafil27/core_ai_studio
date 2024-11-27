@@ -1,35 +1,46 @@
-// App.jsx
+// App.js
 
-// Import necessary libraries from React and React Native
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AppRegistry } from 'react-native';
-
-// Import the screens
 import HomeScreen from './screens/HomeScreen';
 import ImageScreen from './screens/ImageScreen';
 import TextScreen from './screens/TextScreen';
 import VideoScreen from './screens/VideoScreen';
 import ChatScreen from './screens/ChatScreen';
+import VoiceScreen from './screens/VoiceScreen';
+import SettingsScreen from './screens/SettingsScreen';
+import NotificationsScreen from './screens/NotificationsScreen';
+import { ThemeProvider } from './context/ThemeContext';
 
-const Stack = createStackNavigator(); // Create a stack navigator
+const Stack = createStackNavigator();
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="HomeScreen">
-        {/* Define routes for each screen */}
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="ImageScreen" component={ImageScreen} />
-        <Stack.Screen name="TextScreen" component={TextScreen} />
-        <Stack.Screen name="VideoScreen" component={VideoScreen} />
-        <Stack.Screen name="ChatScreen" component={ChatScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <ThemeProvider>
+      <NavigationContainer>
+        <Stack.Navigator 
+          initialRouteName="HomeScreen"
+          screenOptions={{
+            headerShown: true
+          }}
+        >
+          <Stack.Screen 
+            name="HomeScreen" 
+            component={HomeScreen} 
+            initialParams={{ username: 'John Doe' }} 
+          />
+          <Stack.Screen name="ImageScreen" component={ImageScreen} />
+          <Stack.Screen name="TextScreen" component={TextScreen} />
+          <Stack.Screen name="VideoScreen" component={VideoScreen} />
+          <Stack.Screen name="ChatScreen" component={ChatScreen} />
+          <Stack.Screen name="VoiceScreen" component={VoiceScreen} />
+          <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+          <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </ThemeProvider>
   );
 };
-
-AppRegistry.registerComponent('main', () => App);
 
 export default App;

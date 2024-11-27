@@ -1,15 +1,17 @@
 // screens/TextScreen.jsx
 
-// Import necessary libraries and components from React and React Native
-import React from 'react';
-import { View } from 'react-native';
-import TextGenerator from '../components/TextGenerator';
+import React, { useContext } from 'react';
+import { View, Text } from 'react-native';
+import { ThemeContext } from '../context/ThemeContext';
+import HomeScreenStyles from '../styles/HomeScreenStyles';
 
 const TextScreen = () => {
+  const { isDarkMode } = useContext(ThemeContext);
+  const styles = HomeScreenStyles(isDarkMode);
+
   return (
-    <View>
-      {/* TextGenerator component for generating text */}
-      <TextGenerator />
+    <View style={styles.container}>
+      <Text style={styles.greetingText}>This is the Text Screen</Text>
     </View>
   );
 };

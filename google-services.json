@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1003589117086",
+    "firebase_url": "https://core-ai-8a73b-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "core-ai-8a73b",
+    "storage_bucket": "core-ai-8a73b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1003589117086:android:1a4b59c908c6200dc5c78f",
+        "android_client_info": {
+          "package_name": "com.kafilcodes.coreaistudio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1003589117086-g7fmioo9gh95pef1904m4dnefuo57dk6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFMKgHaQtgdBAVds3Yfc13PUh9juk6SNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1003589117086-g7fmioo9gh95pef1904m4dnefuo57dk6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1003589117086-rm811gamckt9cmq2fhr2ds85j7gd3hem.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.kafilcodes.coreaistudio"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
