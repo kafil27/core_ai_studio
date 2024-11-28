@@ -1,16 +1,27 @@
 // screens/ChatScreen.jsx
 
 // Import necessary libraries and components from React and React Native
-import React from 'react';
-import { View } from 'react-native';
-import Chat from '../components/Chat';
+import React, { useContext } from 'react';
+import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ThemeContext } from '../context/ThemeContext';
+import CommonScreenStyles from '../styles/CommonScreenStyles';
+import CustomHeader from '../components/CustomHeader';
 
 const ChatScreen = () => {
+  const { isDarkMode } = useContext(ThemeContext);
+  const styles = CommonScreenStyles(isDarkMode);
+
   return (
-    <View>
-      {/* Chat component for chat functionality */}
-      <Chat />
-    </View>
+    <SafeAreaView style={styles.safeArea}>
+      <CustomHeader title="Chat" />
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.contentContainer}>
+          <Text style={styles.text}>
+            This is the Chat Screen
+          </Text>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 

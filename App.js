@@ -11,34 +11,43 @@ import ChatScreen from './screens/ChatScreen';
 import VoiceScreen from './screens/VoiceScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import NotificationsScreen from './screens/NotificationsScreen';
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider, ThemeContext } from './context/ThemeContext';
+import { TouchableOpacity, StatusBar } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <ThemeProvider>
-      <NavigationContainer>
-        <Stack.Navigator 
-          initialRouteName="HomeScreen"
-          screenOptions={{
-            headerShown: true
-          }}
-        >
-          <Stack.Screen 
-            name="HomeScreen" 
-            component={HomeScreen} 
-            initialParams={{ username: 'John Doe' }} 
-          />
-          <Stack.Screen name="ImageScreen" component={ImageScreen} />
-          <Stack.Screen name="TextScreen" component={TextScreen} />
-          <Stack.Screen name="VideoScreen" component={VideoScreen} />
-          <Stack.Screen name="ChatScreen" component={ChatScreen} />
-          <Stack.Screen name="VoiceScreen" component={VoiceScreen} />
-          <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
-          <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <ThemeContext.Consumer>
+        {({ isDarkMode }) => (
+          <>
+            <StatusBar hidden={true} />
+            <NavigationContainer>
+              <Stack.Navigator
+                initialRouteName="HomeScreen"
+                screenOptions={{
+                  headerShown: false,
+                }}
+              >
+                <Stack.Screen
+                  name="HomeScreen"
+                  component={HomeScreen}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="ImageScreen" component={ImageScreen} options={{ title: 'Image' }} />
+                <Stack.Screen name="TextScreen" component={TextScreen} options={{ title: 'Text' }} />
+                <Stack.Screen name="VideoScreen" component={VideoScreen} options={{ title: 'Video' }} />
+                <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ title: 'Chat' }} />
+                <Stack.Screen name="VoiceScreen" component={VoiceScreen} options={{ title: 'Voice' }} />
+                <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ title: 'Settings' }} />
+                <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} options={{ title: 'Notifications' }} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </>
+        )}
+      </ThemeContext.Consumer>
     </ThemeProvider>
   );
 };
