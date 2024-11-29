@@ -9,12 +9,14 @@ const HomeScreenStyles = (isDarkMode) => StyleSheet.create({
         flex: 1,
         backgroundColor: isDarkMode ? '#000000' : '#ffffff',
     },
+    scrollView: {
+        flex: 1,
+    },
     scrollContent: {
         flexGrow: 1,
         paddingHorizontal: 16,
-        paddingTop: 20,
+        paddingTop: 10,
         paddingBottom: 30,
-        minHeight: '100%',
     },
     botContainer: {
         alignItems: 'center',
@@ -40,6 +42,7 @@ const HomeScreenStyles = (isDarkMode) => StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 16,
+        width: '100%',
     },
     recentActivityContainer: {
         borderWidth: 1,

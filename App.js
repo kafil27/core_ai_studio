@@ -14,6 +14,7 @@ import NotificationsScreen from './screens/NotificationsScreen';
 import { ThemeProvider, ThemeContext } from './context/ThemeContext';
 import { TouchableOpacity, StatusBar } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import ProfileScreen from './screens/ProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -29,20 +30,26 @@ const App = () => {
                 initialRouteName="HomeScreen"
                 screenOptions={{
                   headerShown: false,
+                  animationEnabled: false,
+                  cardStyleInterpolator: undefined,
+                  transitionSpec: {
+                    open: { animation: 'timing', config: { duration: 0 } },
+                    close: { animation: 'timing', config: { duration: 0 } },
+                  },
                 }}
               >
                 <Stack.Screen
                   name="HomeScreen"
                   component={HomeScreen}
-                  options={{ headerShown: false }}
                 />
-                <Stack.Screen name="ImageScreen" component={ImageScreen} options={{ title: 'Image' }} />
-                <Stack.Screen name="TextScreen" component={TextScreen} options={{ title: 'Text' }} />
-                <Stack.Screen name="VideoScreen" component={VideoScreen} options={{ title: 'Video' }} />
-                <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ title: 'Chat' }} />
-                <Stack.Screen name="VoiceScreen" component={VoiceScreen} options={{ title: 'Voice' }} />
-                <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ title: 'Settings' }} />
-                <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} options={{ title: 'Notifications' }} />
+                <Stack.Screen name="ImageScreen" component={ImageScreen} />
+                <Stack.Screen name="TextScreen" component={TextScreen} />
+                <Stack.Screen name="VideoScreen" component={VideoScreen} />
+                <Stack.Screen name="ChatScreen" component={ChatScreen} />
+                <Stack.Screen name="VoiceScreen" component={VoiceScreen} />
+                <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+                <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
+                <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
               </Stack.Navigator>
             </NavigationContainer>
           </>

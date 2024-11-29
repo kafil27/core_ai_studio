@@ -10,13 +10,11 @@ const CustomHeader = ({ title, isHomeScreen = false }) => {
 
   const styles = StyleSheet.create({
     header: {
-      backgroundColor: isDarkMode ? '#121212' : '#f5f5f5',
+      backgroundColor: isDarkMode ? '#000000' : '#ffffff',
       flexDirection: 'row',
       alignItems: 'center',
       paddingHorizontal: 16,
       paddingVertical: 12,
-      borderBottomWidth: 1,
-      borderBottomColor: isDarkMode ? '#333333' : '#e0e0e0',
     },
     iconContainer: {
       marginRight: 16,

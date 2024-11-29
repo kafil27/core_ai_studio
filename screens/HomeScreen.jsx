@@ -18,6 +18,7 @@ import ServiceButton from '../components/ServiceButton';
 import RecentActivity from '../components/RecentActivity';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
+import AppBar from '../components/AppBar';
 
 const { width } = Dimensions.get('window');
 
@@ -90,19 +91,22 @@ const HomeScreen = ({ route }) => {
   }));
 
   const textAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: textOpacity.value,
-    transform: [
-      { translateY: withSpring(textOpacity.value * 10) }
-    ]
+    opacity: textOpacity.value
   }));
 
   const shimmerAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: shimmerPosition.value }]
   }));
 
+  const handleNavigation = (screenName) => {
+    navigation.navigate(screenName);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <AppBar />
       <ScrollView 
+        style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         bounces={true}
@@ -124,13 +128,13 @@ const HomeScreen = ({ route }) => {
               title="Chat"
               icon="chat-bubble-outline"
               colors={['#ff7e5f', '#feb47b']}
-              onPress={() => navigation.navigate('ChatScreen')}
+              onPress={() => handleNavigation('ChatScreen')}
             />
             <ServiceButton 
               title="Image"
               icon="image"
               colors={['#6a11cb', '#2575fc']}
-              onPress={() => navigation.navigate('ImageScreen')}
+              onPress={() => handleNavigation('ImageScreen')}
             />
           </View>
           <View style={styles.servicesRow}>
@@ -138,13 +142,13 @@ const HomeScreen = ({ route }) => {
               title="Video"
               icon="videocam"
               colors={['#a8ff78', '#78ffd6']}
-              onPress={() => navigation.navigate('VideoScreen')}
+              onPress={() => handleNavigation('VideoScreen')}
             />
             <ServiceButton 
               title="Voice"
               icon="mic"
               colors={['#f093fb', '#f5576c']}
-              onPress={() => navigation.navigate('VoiceScreen')}
+              onPress={() => handleNavigation('VoiceScreen')}
             />
           </View>
         </View>
@@ -156,15 +160,6 @@ const HomeScreen = ({ route }) => {
           </View>
           <RecentActivity />
         </View>
-
-        <Animated.View style={[styles.shimmer, shimmerAnimatedStyle]}>
-          <LinearGradient
-            colors={['transparent', 'rgba(255,255,255,0.3)', 'transparent']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.gradient}
-          />
-        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );
