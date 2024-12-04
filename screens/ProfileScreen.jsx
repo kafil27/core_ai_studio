@@ -1,15 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { 
-  SafeAreaView, 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Image, 
-  Alert, 
-  TextInput,
-  ScrollView
-} from 'react-native';
+import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native';
 import { ThemeContext } from '../context/ThemeContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';

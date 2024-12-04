@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1003589117086-05d6l6ljajcnvv7g7d59lutaldodogeg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kafilcodes.coreaistudio",
+            "certificate_hash": "6f475aaf2433b2245fb197b9b87fd6b423c51459"
+          }
+        },
+        {
           "client_id": "1003589117086-g7fmioo9gh95pef1904m4dnefuo57dk6.apps.googleusercontent.com",
           "client_type": 3
         }
