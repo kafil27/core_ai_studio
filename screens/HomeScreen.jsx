@@ -1,7 +1,7 @@
 // screens/HomeScreen.jsx
 
-import React, { useContext, useEffect } from 'react';
-import { SafeAreaView, View, Text, ScrollView, Dimensions } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { SafeAreaView, View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../context/ThemeContext';
 import HomeScreenStyles from '../styles/HomeScreenStyles';
@@ -19,6 +19,8 @@ import RecentActivity from '../components/RecentActivity';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
 import AppBar from '../components/AppBar';
+import { auth } from '../services/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const { width } = Dimensions.get('window');
 
@@ -27,6 +29,18 @@ const HomeScreen = ({ route }) => {
   const { username } = route.params || { username: 'User' };
   const { isDarkMode } = useContext(ThemeContext);
   const styles = HomeScreenStyles(isDarkMode);
+
+  const [userEmail, setUserEmail] = useState('');
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserEmail(user.email);
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   // Animation values
   const botScale = useSharedValue(0.8);
@@ -122,6 +136,12 @@ const HomeScreen = ({ route }) => {
           Hello, {username}! How can I help you?
         </Animated.Text>
 
+        {userEmail ? (
+          <View style={styles.emailContainer}>
+            <Text style={styles.emailText}>{userEmail}</Text>
+          </View>
+        ) : null}
+
         <View style={styles.servicesContainer}>
           <View style={styles.servicesRow}>
             <ServiceButton 
@@ -164,5 +184,21 @@ const HomeScreen = ({ route }) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  emailContainer: {
+    marginVertical: 10,
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: '#e0e0e0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 16,
+  },
+  emailText: {
+    fontSize: 16,
+    color: '#000',
+  },
+});
 
 export default HomeScreen;
