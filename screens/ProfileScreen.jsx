@@ -4,8 +4,7 @@ import { ThemeContext } from '../context/ThemeContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
 import CustomHeader from '../components/CustomHeader';
-import { getUserData, updateUserData } from '../services/firestore';
-import { auth } from '../services/firebase';
+import { auth, getUserData, updateUserData } from '../services/firebase';
 
 const ProfileScreen = () => {
   const { theme } = useContext(ThemeContext);
@@ -13,13 +12,39 @@ const ProfileScreen = () => {
   const [tokens, setTokens] = useState(100); // Example token count
   const [apiKey, setApiKey] = useState('');
   const [isEditingApiKey, setIsEditingApiKey] = useState(false);
+  const [name, setName] = useState('');
 
   useEffect(() => {
-    const user = auth.currentUser;
-    if (user) {
-      getUserData(user.uid).then(setUserData);
-    }
+    const fetchUserData = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const data = await getUserData(user.uid);
+          if (data) {
+            setUserData(data);
+            setName(data.name);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data: ", error);
+      }
+    };
+
+    fetchUserData();
   }, []);
+
+  const handleUpdateUserData = async () => {
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        await updateUserData(user.uid, { name });
+        alert('Profile updated successfully!');
+      }
+    } catch (error) {
+      console.error("Error updating user data: ", error);
+      alert('Failed to update profile.');
+    }
+  };
 
   const handleEditProfile = () => {
     Alert.alert('Edit Profile', 'Profile editing is not implemented yet.');
@@ -31,7 +56,7 @@ const ProfileScreen = () => {
 
   const handleSaveApiKey = async () => {
     try {
-      await updateUserData(auth.currentUser.uid, { apiKey });
+      await firestore.collection('users').doc(auth.currentUser.uid).update({ apiKey });
       Alert.alert('Success', 'API Key updated successfully');
       setIsEditingApiKey(false);
     } catch (error) {

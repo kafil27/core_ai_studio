@@ -22,7 +22,7 @@ const SignInScreen = () => {
       const credential = GoogleAuthProvider.credential(id_token);
       signInWithCredential(auth, credential)
         .then(() => {
-          navigation.replace('HomeScreen');
+          navigation.navigate('HomeScreen');
         })
         .catch(error => {
           Alert.alert('Error', error.message);
@@ -33,7 +33,7 @@ const SignInScreen = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       if (user) {
-        navigation.replace('HomeScreen');
+        navigation.navigate('HomeScreen');
       }
     });
     return unsubscribe;
@@ -42,7 +42,7 @@ const SignInScreen = () => {
   const handleSignIn = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then(() => {
-        navigation.replace('HomeScreen');
+        navigation.navigate('HomeScreen');
       })
       .catch(error => {
         Alert.alert('Error', error.message);

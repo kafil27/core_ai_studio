@@ -1,7 +1,7 @@
 import { auth, firestore } from './firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { setInitialUserSettings } from './realtimeDatabase';
+
 
 // Sign up a new user
 export const signUp = async (email, password, name) => {

@@ -43,13 +43,13 @@ const VoiceScreen = () => {
       borderColor: isAdvanced ? 'transparent' : '#ff7e5f',
     },
     advancedButtonText: {
-      color: isAdvanced ? '#ffffff' : (theme.text ? '#ffffff' : '#000000'),
+      color: isAdvanced ? '#ffffff' : theme.text,
       textAlign: 'center',
     },
     heading: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: theme.text ? '#ffffff' : '#000000',
+      color: theme.text,
       marginBottom: 16,
     },
     promptContainer: {
@@ -57,11 +57,11 @@ const VoiceScreen = () => {
     },
     promptInput: {
       borderWidth: 1,
-      borderColor: theme.text ? '#333333' : '#cccccc',
+      borderColor: theme.border,
       borderRadius: 8,
       padding: 12,
-      color: theme.text ? '#ffffff' : '#000000',
-      backgroundColor: theme.text ? '#333333' : '#f5f5f5',
+      color: theme.text,
+      backgroundColor: theme.inputBackground,
       maxHeight: 100,
     },
     promptActions: {
@@ -89,7 +89,7 @@ const VoiceScreen = () => {
     voiceHeading: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: theme.text ? '#ffffff' : '#000000',
+      color: theme.text,
       marginBottom: 8,
     },
     voiceScroll: {
@@ -99,7 +99,7 @@ const VoiceScreen = () => {
       padding: 16,
       borderRadius: 8,
       marginRight: 8,
-      backgroundColor: theme.text ? '#333333' : '#e0e0e0',
+      backgroundColor: theme.inputBackground,
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 2,
@@ -110,7 +110,7 @@ const VoiceScreen = () => {
       borderColor: '#ff7e5f',
     },
     voiceOptionText: {
-      color: theme.text ? '#ffffff' : '#000000',
+      color: theme.text,
       marginLeft: 8,
     },
     generateButton: {
@@ -171,20 +171,20 @@ const VoiceScreen = () => {
             value={prompt}
             onChangeText={setPrompt}
             placeholder="Enter your prompt here..."
-            placeholderTextColor={theme.text ? '#888888' : '#666666'}
+            placeholderTextColor={theme.placeholder}
             multiline
             maxLength={6000}
           />
           <View style={styles.promptActions}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ color: prompt.length >= 6000 ? 'red' : theme.text ? '#ffffff' : '#000000' }}>
+              <Text style={{ color: prompt.length >= 6000 ? 'red' : theme.text }}>
                 {prompt.length}/6000
               </Text>
               {prompt.length >= 6000 && (
                 <Text style={{ color: 'red', fontSize: 10, marginLeft: 4 }}>Max characters reached</Text>
               )}
               <TouchableOpacity onPress={() => setPrompt('')} style={{ marginLeft: 8 }}>
-                <Icon name="highlight-off" size={20} color={theme.text ? '#ffffff' : '#000000'} />
+                <Icon name="highlight-off" size={20} color={theme.text} />
               </TouchableOpacity>
             </View>
           </View>
@@ -203,7 +203,7 @@ const VoiceScreen = () => {
                   <Icon 
                     name={playingVoice === voice ? "pause" : "play-arrow"} 
                     size={24} 
-                    color={theme.text ? '#ffffff' : '#000000'} 
+                    color={theme.text} 
                     onPress={() => handlePlayVoice(voice)}
                   />
                   <Text style={styles.voiceOptionText}>{voice}</Text>

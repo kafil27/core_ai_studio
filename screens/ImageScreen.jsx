@@ -44,13 +44,13 @@ const ImageScreen = () => {
       borderColor: isPro ? 'transparent' : '#ff7e5f',
     },
     proButtonText: {
-      color: isPro ? '#ffffff' : theme.text,
+      color: isPro ? '#ffffff' : (theme.text ? '#ffffff' : '#000000'),
       textAlign: 'center',
     },
     heading: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: theme.text,
+      color: theme.text ? '#ffffff' : '#000000',
       marginBottom: 16,
     },
     promptContainer: {
@@ -58,11 +58,11 @@ const ImageScreen = () => {
     },
     promptInput: {
       borderWidth: 1,
-      borderColor: theme.border,
+      borderColor: theme.text ? '#333333' : '#cccccc',
       borderRadius: 8,
       padding: 12,
-      color: theme.text,
-      backgroundColor: theme.background,
+      color: theme.text ? '#ffffff' : '#000000',
+      backgroundColor: theme.text ? '#333333' : '#f5f5f5',
       maxHeight: 100,
     },
     promptActions: {
@@ -90,7 +90,7 @@ const ImageScreen = () => {
     styleHeading: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: theme.text,
+      color: theme.text ? '#ffffff' : '#000000',
       marginBottom: 8,
     },
     styleScroll: {
@@ -100,7 +100,7 @@ const ImageScreen = () => {
       padding: 16,
       borderRadius: 8,
       marginRight: 8,
-      backgroundColor: theme.background,
+      backgroundColor: theme.text ? '#333333' : '#e0e0e0',
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 2,
@@ -110,7 +110,7 @@ const ImageScreen = () => {
       borderColor: '#ff7e5f',
     },
     styleOptionText: {
-      color: theme.text,
+      color: theme.text ? '#ffffff' : '#000000',
       marginTop: 4,
     },
     generateButton: {
@@ -181,20 +181,20 @@ const ImageScreen = () => {
             value={prompt}
             onChangeText={setPrompt}
             placeholder="Enter your prompt here..."
-            placeholderTextColor={theme.border}
+            placeholderTextColor={theme.text ? '#888888' : '#666666'}
             multiline
             maxLength={4000}
           />
           <View style={styles.promptActions}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ color: prompt.length >= 4000 ? 'red' : theme.text }}>
+              <Text style={{ color: prompt.length >= 4000 ? 'red' : theme.text ? '#ffffff' : '#000000' }}>
                 {prompt.length}/4000
               </Text>
               {prompt.length >= 4000 && (
                 <Text style={{ color: 'red', fontSize: 10, marginLeft: 4 }}>Max characters reached</Text>
               )}
               <TouchableOpacity onPress={() => setPrompt('')} style={{ marginLeft: 8 }}>
-                <Icon name="highlight-off" size={20} color={theme.text} />
+                <Icon name="highlight-off" size={20} color={theme.text ? '#ffffff' : '#000000'} />
               </TouchableOpacity>
             </View>
           </View>
@@ -234,7 +234,7 @@ const ImageScreen = () => {
                   style={[styles.styleOption, selectedStyle === style && styles.styleOptionSelected]}
                   onPress={() => setSelectedStyle(style)}
                 >
-                  <Icon name="brush" size={24} color={theme.text} />
+                  <Icon name="brush" size={24} color={theme.text ? '#ffffff' : '#000000'} />
                   <Text style={styles.styleOptionText}>{style}</Text>
                 </TouchableOpacity>
               ))}

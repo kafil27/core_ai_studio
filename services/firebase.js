@@ -2,7 +2,7 @@
 
 import { initializeApp } from "firebase/app";
 import { getAuth, initializeAuth, getReactNativePersistence } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAnalytics, isSupported } from "firebase/analytics";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,5 +35,16 @@ isSupported().then(supported => {
     getAnalytics(app);
   }
 });
+
+// Function to get user data
+export const getUserData = async (userId) => {
+  const userDoc = await getDoc(doc(firestore, 'users', userId));
+  return userDoc.exists() ? userDoc.data() : null;
+};
+
+// Function to update user data
+export const updateUserData = async (userId, data) => {
+  await updateDoc(doc(firestore, 'users', userId), data);
+};
 
 export { auth, firestore, storage };

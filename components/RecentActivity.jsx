@@ -1,28 +1,53 @@
 // components/RecentActivity.jsx
 
-import React, { useContext } from 'react';
-import { View, Text } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { ThemeContext } from '../context/ThemeContext';
 import { styles } from '../styles/RecentActivityStyles';
-
-const recentActivities = [
-  { id: '1', activity: 'Generated an image' },
-  { id: '2', activity: 'Started a new chat' },
-  { id: '3', activity: 'Generated a video' },
-  { id: '4', activity: 'Used voice assistant (beta)' },
-];
+import { auth, getUserData } from '../services/firebase'; // Import getUserData
 
 const RecentActivity = () => {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const userData = await getUserData(user.uid);
+          if (userData && userData.recentActivities) {
+            setActivities(userData.recentActivities);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching recent activities: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActivities();
+  }, []);
+
+  if (loading) {
+    return <ActivityIndicator size="large" color={theme.text} />;
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={[styles.title, { color: isDarkMode ? 'white' : 'black' }]}>Recent Activities</Text>
-      {recentActivities.map((item) => (
-        <View key={item.id} style={[styles.activityContainer, { borderColor: isDarkMode ? '#ffffff' : '#000000' }]}>
-          <Text style={[styles.activityText, { color: isDarkMode ? 'white' : 'black' }]}>{item.activity}</Text>
-        </View>
-      ))}
+      {activities.length > 0 ? (
+        activities.map((activity, index) => (
+          <View key={index} style={[styles.activityContainer, { borderColor: theme.border }]}>
+            <Text style={[styles.activityText, { color: theme.text }]}>{activity}</Text>
+          </View>
+        ))
+      ) : (
+        <Text style={[styles.activityText, { color: theme.text }]}>
+          None 😢
+        </Text>
+      )}
     </View>
   );
 };

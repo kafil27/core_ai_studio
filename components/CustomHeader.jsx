@@ -31,8 +31,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
   },
   iconContainer: {
     marginRight: 16,

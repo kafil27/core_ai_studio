@@ -1,7 +1,7 @@
 // screens/HomeScreen.jsx
 
 import React, { useContext, useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, ScrollView, Dimensions, StyleSheet, Image } from 'react-native';
+import { SafeAreaView, View, Text, ScrollView, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../context/ThemeContext';
 import HomeScreenStyles from '../styles/HomeScreenStyles';
@@ -17,11 +17,8 @@ import Animated, {
 import ServiceButton from '../components/ServiceButton';
 import RecentActivity from '../components/RecentActivity';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { LinearGradient } from 'expo-linear-gradient';
 import AppBar from '../components/AppBar';
-import { auth } from '../services/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
-import { getUserData } from '../services/firestore';
+import { auth, getUserData } from '../services/firebase';
 
 const { width } = Dimensions.get('window');
 
@@ -35,14 +32,22 @@ const HomeScreen = ({ route }) => {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserEmail(user.email);
-        getUserData(user.uid).then(setUserData);
+    const fetchUserData = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const data = await getUserData(user.uid);
+          if (data) {
+            setUserData(data);
+            setUserEmail(user.email);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data: ", error);
       }
-    });
+    };
 
-    return unsubscribe;
+    fetchUserData();
   }, []);
 
   // Animation values
@@ -120,8 +125,8 @@ const HomeScreen = ({ route }) => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
-      <AppBar userData={userData} />
+    <SafeAreaView style={styles.container}>
+      <AppBar userData={userData} userEmail={userEmail} />
       <ScrollView 
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -135,15 +140,9 @@ const HomeScreen = ({ route }) => {
           />
         </View>
 
-        <Animated.Text style={[styles.greetingText, textAnimatedStyle, { color: theme.text }]}>
+        <Animated.Text style={[styles.greetingText, textAnimatedStyle]}>
           Hello, {userData?.name || username}! How can I help you?
         </Animated.Text>
-
-        {userEmail ? (
-          <View style={styles.emailContainer}>
-            <Text style={[styles.emailText, { color: theme.text }]}>{userEmail}</Text>
-          </View>
-        ) : null}
 
         <View style={styles.servicesContainer}>
           <View style={styles.servicesRow}>
@@ -179,7 +178,7 @@ const HomeScreen = ({ route }) => {
         <View style={styles.recentActivityContainer}>
           <View style={styles.recentActivityHeader}>
             <Icon name="history" size={24} color={theme.text} />
-            <Text style={[styles.recentActivityTitle, { color: theme.text }]}>Recent Activities</Text>
+            <Text style={styles.recentActivityTitle}>Recent Activities</Text>
           </View>
           <RecentActivity />
         </View>
@@ -187,21 +186,5 @@ const HomeScreen = ({ route }) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  emailContainer: {
-    marginVertical: 10,
-    padding: 10,
-    borderRadius: 20,
-    backgroundColor: '#e0e0e0',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: 16,
-  },
-  emailText: {
-    fontSize: 16,
-    color: '#000',
-  },
-});
 
 export default HomeScreen;
