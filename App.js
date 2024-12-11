@@ -13,7 +13,7 @@ import NotificationsScreen from './screens/NotificationsScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import SignInScreen from './screens/SignInScreen';
 import SignUpScreen from './screens/SignUpScreen';
-import { ThemeProvider, ThemeContext } from './context/ThemeContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { StatusBar } from 'react-native';
 import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -32,39 +32,33 @@ const App = () => {
 
   return (
     <ThemeProvider>
-      <ThemeContext.Consumer>
-        {({ isDarkMode }) => (
-          <>
-            <StatusBar hidden={true} />
-            <NavigationContainer>
-              <Stack.Navigator
-                initialRouteName="SignInScreen"
-                screenOptions={{
-                  headerShown: false,
-                }}
-              >
-                {isAuthenticated ? (
-                  <>
-                    <Stack.Screen name="HomeScreen" component={HomeScreen} />
-                    <Stack.Screen name="ImageScreen" component={ImageScreen} />
-                    <Stack.Screen name="VideoScreen" component={VideoScreen} />
-                    <Stack.Screen name="ChatScreen" component={ChatScreen} />
-                    <Stack.Screen name="VoiceScreen" component={VoiceScreen} />
-                    <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
-                    <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
-                    <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-                  </>
-                ) : (
-                  <>
-                    <Stack.Screen name="SignInScreen" component={SignInScreen} />
-                    <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
-                  </>
-                )}
-              </Stack.Navigator>
-            </NavigationContainer>
-          </>
-        )}
-      </ThemeContext.Consumer>
+      <StatusBar hidden={true} />
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="SignInScreen"
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          {isAuthenticated ? (
+            <>
+              <Stack.Screen name="HomeScreen" component={HomeScreen} />
+              <Stack.Screen name="ImageScreen" component={ImageScreen} />
+              <Stack.Screen name="VideoScreen" component={VideoScreen} />
+              <Stack.Screen name="ChatScreen" component={ChatScreen} />
+              <Stack.Screen name="VoiceScreen" component={VoiceScreen} />
+              <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+              <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} />
+              <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+            </>
+          ) : (
+            <>
+              <Stack.Screen name="SignInScreen" component={SignInScreen} />
+              <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
+            </>
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
     </ThemeProvider>
   );
 };

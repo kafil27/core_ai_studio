@@ -1,30 +1,35 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { auth } from '../services/firebase';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { signUp } from '../services/auth';
 
 const SignUpScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const navigation = useNavigation();
 
-  const handleSignUp = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        navigation.replace('HomeScreen');
-      })
-      .catch(error => {
-        Alert.alert('Error', error.message);
-      });
+  const handleSignUp = async () => {
+    try {
+      await signUp(email, password, name);
+      navigation.replace('HomeScreen');
+    } catch (error) {
+      Alert.alert('Signup Error', error.message);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.content}>
+      <View style={styles.content}>
         <Text style={styles.title}>Sign Up</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+          autoCapitalize="words"
+        />
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -53,7 +58,7 @@ const SignUpScreen = () => {
         <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')} style={styles.link}>
           <Text style={styles.linkText}>Already have an account? Sign In</Text>
         </TouchableOpacity>
-      </Animated.View>
+      </View>
     </SafeAreaView>
   );
 };

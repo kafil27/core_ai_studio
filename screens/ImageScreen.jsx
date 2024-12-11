@@ -21,7 +21,7 @@ import * as ImagePicker from 'expo-image-picker';
 const { width } = Dimensions.get('window');
 
 const ImageScreen = () => {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const [isPro, setIsPro] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [selectedStyle, setSelectedStyle] = useState(null);
@@ -30,7 +30,7 @@ const ImageScreen = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: isDarkMode ? '#000000' : '#ffffff',
+      backgroundColor: theme.background,
     },
     contentContainer: {
       padding: 16,
@@ -44,13 +44,13 @@ const ImageScreen = () => {
       borderColor: isPro ? 'transparent' : '#ff7e5f',
     },
     proButtonText: {
-      color: isPro ? '#ffffff' : (isDarkMode ? '#ffffff' : '#000000'),
+      color: isPro ? '#ffffff' : theme.text,
       textAlign: 'center',
     },
     heading: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text,
       marginBottom: 16,
     },
     promptContainer: {
@@ -58,11 +58,11 @@ const ImageScreen = () => {
     },
     promptInput: {
       borderWidth: 1,
-      borderColor: isDarkMode ? '#333333' : '#cccccc',
+      borderColor: theme.border,
       borderRadius: 8,
       padding: 12,
-      color: isDarkMode ? '#ffffff' : '#000000',
-      backgroundColor: isDarkMode ? '#333333' : '#f5f5f5',
+      color: theme.text,
+      backgroundColor: theme.background,
       maxHeight: 100,
     },
     promptActions: {
@@ -90,7 +90,7 @@ const ImageScreen = () => {
     styleHeading: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text,
       marginBottom: 8,
     },
     styleScroll: {
@@ -100,7 +100,7 @@ const ImageScreen = () => {
       padding: 16,
       borderRadius: 8,
       marginRight: 8,
-      backgroundColor: isDarkMode ? '#333333' : '#e0e0e0',
+      backgroundColor: theme.background,
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 2,
@@ -110,7 +110,7 @@ const ImageScreen = () => {
       borderColor: '#ff7e5f',
     },
     styleOptionText: {
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text,
       marginTop: 4,
     },
     generateButton: {
@@ -181,20 +181,20 @@ const ImageScreen = () => {
             value={prompt}
             onChangeText={setPrompt}
             placeholder="Enter your prompt here..."
-            placeholderTextColor={isDarkMode ? '#888888' : '#666666'}
+            placeholderTextColor={theme.border}
             multiline
             maxLength={4000}
           />
           <View style={styles.promptActions}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ color: prompt.length >= 4000 ? 'red' : isDarkMode ? '#ffffff' : '#000000' }}>
+              <Text style={{ color: prompt.length >= 4000 ? 'red' : theme.text }}>
                 {prompt.length}/4000
               </Text>
               {prompt.length >= 4000 && (
                 <Text style={{ color: 'red', fontSize: 10, marginLeft: 4 }}>Max characters reached</Text>
               )}
               <TouchableOpacity onPress={() => setPrompt('')} style={{ marginLeft: 8 }}>
-                <Icon name="highlight-off" size={20} color={isDarkMode ? '#ffffff' : '#000000'} />
+                <Icon name="highlight-off" size={20} color={theme.text} />
               </TouchableOpacity>
             </View>
           </View>
@@ -234,7 +234,7 @@ const ImageScreen = () => {
                   style={[styles.styleOption, selectedStyle === style && styles.styleOptionSelected]}
                   onPress={() => setSelectedStyle(style)}
                 >
-                  <Icon name="brush" size={24} color={isDarkMode ? '#ffffff' : '#000000'} />
+                  <Icon name="brush" size={24} color={theme.text} />
                   <Text style={styles.styleOptionText}>{style}</Text>
                 </TouchableOpacity>
               ))}

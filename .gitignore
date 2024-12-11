@@ -18,8 +18,8 @@ dist/
 web-build/
 /ios
 /android
-google-services.json
-GoogleService-Info.plist
+# google-services.json
+# GoogleService-Info.plist
 
 # IDE specific files
 .idea/

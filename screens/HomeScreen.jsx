@@ -1,7 +1,7 @@
 // screens/HomeScreen.jsx
 
 import React, { useContext, useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
+import { SafeAreaView, View, Text, ScrollView, Dimensions, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from '../context/ThemeContext';
 import HomeScreenStyles from '../styles/HomeScreenStyles';
@@ -21,21 +21,24 @@ import { LinearGradient } from 'expo-linear-gradient';
 import AppBar from '../components/AppBar';
 import { auth } from '../services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import { getUserData } from '../services/firestore';
 
 const { width } = Dimensions.get('window');
 
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
   const { username } = route.params || { username: 'User' };
-  const { isDarkMode } = useContext(ThemeContext);
-  const styles = HomeScreenStyles(isDarkMode);
+  const { theme } = useContext(ThemeContext);
+  const styles = HomeScreenStyles(theme);
 
   const [userEmail, setUserEmail] = useState('');
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserEmail(user.email);
+        getUserData(user.uid).then(setUserData);
       }
     });
 
@@ -117,8 +120,8 @@ const HomeScreen = ({ route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <AppBar />
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <AppBar userData={userData} />
       <ScrollView 
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -132,13 +135,13 @@ const HomeScreen = ({ route }) => {
           />
         </View>
 
-        <Animated.Text style={[styles.greetingText, textAnimatedStyle]}>
-          Hello, {username}! How can I help you?
+        <Animated.Text style={[styles.greetingText, textAnimatedStyle, { color: theme.text }]}>
+          Hello, {userData?.name || username}! How can I help you?
         </Animated.Text>
 
         {userEmail ? (
           <View style={styles.emailContainer}>
-            <Text style={styles.emailText}>{userEmail}</Text>
+            <Text style={[styles.emailText, { color: theme.text }]}>{userEmail}</Text>
           </View>
         ) : null}
 
@@ -175,8 +178,8 @@ const HomeScreen = ({ route }) => {
 
         <View style={styles.recentActivityContainer}>
           <View style={styles.recentActivityHeader}>
-            <Icon name="history" size={24} color={isDarkMode ? 'white' : 'black'} />
-            <Text style={styles.recentActivityTitle}>Recent Activities</Text>
+            <Icon name="history" size={24} color={theme.text} />
+            <Text style={[styles.recentActivityTitle, { color: theme.text }]}>Recent Activities</Text>
           </View>
           <RecentActivity />
         </View>

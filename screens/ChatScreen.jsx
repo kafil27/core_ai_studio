@@ -29,7 +29,7 @@ import Animated, {
 const { width } = Dimensions.get('window');
 
 const ChatScreen = () => {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [selectedModel, setSelectedModel] = useState('gpt-3.5-turbo');
@@ -39,7 +39,6 @@ const ChatScreen = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: isDarkMode ? '#000000' : '#ffffff',
     },
     content: {
       flex: 1,
@@ -55,8 +54,8 @@ const ChatScreen = () => {
       paddingHorizontal: 16,
       paddingVertical: 8,
       borderTopWidth: 1,
-      borderTopColor: isDarkMode ? '#333333' : '#e0e0e0',
-      backgroundColor: isDarkMode ? '#000000' : '#ffffff',
+      borderTopColor: theme.border,
+      backgroundColor: theme.background,
       width: '100%',
     },
     input: {
@@ -65,8 +64,8 @@ const ChatScreen = () => {
       paddingHorizontal: 16,
       paddingVertical: 8,
       borderRadius: 20,
-      backgroundColor: isDarkMode ? '#333333' : '#f5f5f5',
-      color: isDarkMode ? '#ffffff' : '#000000',
+      backgroundColor: theme.inputBackground,
+      color: theme.text,
       fontSize: 16,
       maxHeight: 100,
     },
@@ -77,13 +76,13 @@ const ChatScreen = () => {
       transform: [{ scale: 1 }],
     },
     sendButtonDisabled: {
-      backgroundColor: isDarkMode ? '#333333' : '#cccccc',
+      backgroundColor: theme.disabled,
     },
     modelSelectorContainer: {
       paddingHorizontal: 16,
       paddingVertical: 8,
       borderBottomWidth: 1,
-      borderBottomColor: isDarkMode ? '#333333' : '#e0e0e0',
+      borderBottomColor: theme.border,
       width: '100%',
     },
     loadingContainer: {
@@ -91,18 +90,18 @@ const ChatScreen = () => {
       alignItems: 'center',
       padding: 12,
       borderRadius: 16,
-      backgroundColor: isDarkMode ? '#333333' : '#f0f0f0',
+      backgroundColor: theme.background,
       alignSelf: 'flex-start',
       marginVertical: 4,
       maxWidth: '80%',
     },
     loadingText: {
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text,
       marginLeft: 8,
       fontSize: 16,
     },
     loadingDots: {
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text,
       fontSize: 16,
     }
   });
@@ -150,7 +149,7 @@ const ChatScreen = () => {
         exiting={FadeOut}
         style={styles.loadingContainer}
       >
-        <Icon name="chat" size={20} color={isDarkMode ? '#ffffff' : '#000000'} />
+        <Icon name="chat" size={20} color={theme.text} />
         <Text style={styles.loadingText}>AI is thinking</Text>
         <Text style={styles.loadingDots}>{dots}</Text>
       </Animated.View>
@@ -158,7 +157,7 @@ const ChatScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <CustomHeader title="Chat" />
       <View style={styles.modelSelectorContainer}>
         <ModelSelector
@@ -194,7 +193,7 @@ const ChatScreen = () => {
             value={message}
             onChangeText={setMessage}
             placeholder="Type a message..."
-            placeholderTextColor={isDarkMode ? '#888888' : '#666666'}
+            placeholderTextColor={theme.placeholder}
             multiline
           />
           <TouchableOpacity

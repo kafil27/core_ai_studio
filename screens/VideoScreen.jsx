@@ -22,7 +22,7 @@ import { Picker } from '@react-native-picker/picker';
 const { width } = Dimensions.get('window');
 
 const VideoScreen = () => {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const [isPro, setIsPro] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [selectedStyle, setSelectedStyle] = useState(null);
@@ -31,7 +31,7 @@ const VideoScreen = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: isDarkMode ? '#000000' : '#ffffff',
+      backgroundColor: theme.background,
     },
     contentContainer: {
       padding: 16,
@@ -45,13 +45,13 @@ const VideoScreen = () => {
       borderColor: isPro ? 'transparent' : '#ff7e5f',
     },
     proButtonText: {
-      color: isPro ? '#ffffff' : (isDarkMode ? '#ffffff' : '#000000'),
+      color: isPro ? '#ffffff' : (theme.text ? '#ffffff' : '#000000'),
       textAlign: 'center',
     },
     heading: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text ? '#ffffff' : '#000000',
       marginBottom: 16,
     },
     promptContainer: {
@@ -59,11 +59,11 @@ const VideoScreen = () => {
     },
     promptInput: {
       borderWidth: 1,
-      borderColor: isDarkMode ? '#333333' : '#cccccc',
+      borderColor: theme.text ? '#333333' : '#cccccc',
       borderRadius: 8,
       padding: 12,
-      color: isDarkMode ? '#ffffff' : '#000000',
-      backgroundColor: isDarkMode ? '#333333' : '#f5f5f5',
+      color: theme.text ? '#ffffff' : '#000000',
+      backgroundColor: theme.text ? '#333333' : '#f5f5f5',
       maxHeight: 100,
     },
     promptActions: {
@@ -91,7 +91,7 @@ const VideoScreen = () => {
     styleHeading: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text ? '#ffffff' : '#000000',
       marginBottom: 8,
     },
     styleScroll: {
@@ -101,7 +101,7 @@ const VideoScreen = () => {
       padding: 16,
       borderRadius: 8,
       marginRight: 8,
-      backgroundColor: isDarkMode ? '#333333' : '#e0e0e0',
+      backgroundColor: theme.text ? '#333333' : '#e0e0e0',
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 2,
@@ -111,7 +111,7 @@ const VideoScreen = () => {
       borderColor: '#ff7e5f',
     },
     styleOptionText: {
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text ? '#ffffff' : '#000000',
       marginTop: 4,
     },
     aspectRatioContainer: {
@@ -120,14 +120,14 @@ const VideoScreen = () => {
     aspectRatioHeading: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text ? '#ffffff' : '#000000',
       marginBottom: 8,
     },
     picker: {
       height: 50,
       width: '100%',
-      color: isDarkMode ? '#ffffff' : '#000000',
-      backgroundColor: isDarkMode ? '#333333' : '#f5f5f5',
+      color: theme.text ? '#ffffff' : '#000000',
+      backgroundColor: theme.text ? '#333333' : '#f5f5f5',
       borderRadius: 25,
     },
     generateButton: {
@@ -156,7 +156,7 @@ const VideoScreen = () => {
       flexDirection: 'row',
     },
     uploadButtonText: {
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text ? '#ffffff' : '#000000',
       fontSize: 16,
       fontWeight: 'bold',
       marginLeft: 8,
@@ -214,27 +214,27 @@ const VideoScreen = () => {
             value={prompt}
             onChangeText={setPrompt}
             placeholder="Enter your prompt here..."
-            placeholderTextColor={isDarkMode ? '#888888' : '#666666'}
+            placeholderTextColor={theme.text ? '#888888' : '#666666'}
             multiline
             maxLength={5000}
           />
           <View style={styles.promptActions}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ color: prompt.length >= 5000 ? 'red' : isDarkMode ? '#ffffff' : '#000000' }}>
+              <Text style={{ color: prompt.length >= 5000 ? 'red' : theme.text ? '#ffffff' : '#000000' }}>
                 {prompt.length}/5000
               </Text>
               {prompt.length >= 5000 && (
                 <Text style={{ color: 'red', fontSize: 10, marginLeft: 4 }}>Max characters reached</Text>
               )}
               <TouchableOpacity onPress={() => setPrompt('')} style={{ marginLeft: 8 }}>
-                <Icon name="highlight-off" size={20} color={isDarkMode ? '#ffffff' : '#000000'} />
+                <Icon name="highlight-off" size={20} color={theme.text ? '#ffffff' : '#000000'} />
               </TouchableOpacity>
             </View>
           </View>
         </View>
 
         <TouchableOpacity onPress={handleImageUpload} style={styles.uploadButton}>
-          <Icon name="image" size={24} color={isDarkMode ? '#ffffff' : '#000000'} />
+          <Icon name="image" size={24} color={theme.text ? '#ffffff' : '#000000'} />
           <Text style={styles.uploadButtonText}>Upload Image as Reference</Text>
         </TouchableOpacity>
 
@@ -249,7 +249,7 @@ const VideoScreen = () => {
                     style={[styles.styleOption, selectedStyle === style && styles.styleOptionSelected]}
                     onPress={() => setSelectedStyle(style)}
                   >
-                    <Icon name="brush" size={24} color={isDarkMode ? '#ffffff' : '#000000'} />
+                    <Icon name="brush" size={24} color={theme.text ? '#ffffff' : '#000000'} />
                     <Text style={styles.styleOptionText}>{style}</Text>
                   </TouchableOpacity>
                 ))}

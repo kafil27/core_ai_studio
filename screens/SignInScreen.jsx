@@ -5,8 +5,6 @@ import { signInWithEmailAndPassword, signInWithCredential, GoogleAuthProvider, o
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Google from 'expo-auth-session/providers/google';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { GOOGLE_ANDROID_CLIENT_ID, GOOGLE_IOS_CLIENT_ID } from '@env';
 
 const SignInScreen = () => {
   const [email, setEmail] = useState('');
@@ -15,17 +13,20 @@ const SignInScreen = () => {
 
   // Google Sign-In setup
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    androidClientId: GOOGLE_ANDROID_CLIENT_ID,
-    iosClientId: GOOGLE_IOS_CLIENT_ID,
+    clientId: process.env.GOOGLE_WEB_CLIENT_ID, // Use your web client ID
   });
 
   useEffect(() => {
     if (response?.type === 'success') {
       const { id_token } = response.params;
       const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential).catch(error => {
-        Alert.alert('Error', error.message);
-      });
+      signInWithCredential(auth, credential)
+        .then(() => {
+          navigation.replace('HomeScreen');
+        })
+        .catch(error => {
+          Alert.alert('Error', error.message);
+        });
     }
   }, [response]);
 
@@ -50,7 +51,7 @@ const SignInScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.content}>
+      <View style={styles.content}>
         <Text style={styles.title}>Sign In</Text>
         <TextInput
           style={styles.input}
@@ -83,7 +84,7 @@ const SignInScreen = () => {
         <TouchableOpacity onPress={() => promptAsync()} style={styles.googleButton}>
           <Text style={styles.googleButtonText}>Sign In with Google</Text>
         </TouchableOpacity>
-      </Animated.View>
+      </View>
     </SafeAreaView>
   );
 };

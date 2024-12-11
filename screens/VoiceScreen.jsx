@@ -20,7 +20,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 const { width } = Dimensions.get('window');
 
 const VoiceScreen = () => {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const [isAdvanced, setIsAdvanced] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [selectedVoice, setSelectedVoice] = useState(null);
@@ -29,7 +29,7 @@ const VoiceScreen = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: isDarkMode ? '#000000' : '#ffffff',
+      backgroundColor: theme.background,
     },
     contentContainer: {
       padding: 16,
@@ -43,13 +43,13 @@ const VoiceScreen = () => {
       borderColor: isAdvanced ? 'transparent' : '#ff7e5f',
     },
     advancedButtonText: {
-      color: isAdvanced ? '#ffffff' : (isDarkMode ? '#ffffff' : '#000000'),
+      color: isAdvanced ? '#ffffff' : (theme.text ? '#ffffff' : '#000000'),
       textAlign: 'center',
     },
     heading: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text ? '#ffffff' : '#000000',
       marginBottom: 16,
     },
     promptContainer: {
@@ -57,11 +57,11 @@ const VoiceScreen = () => {
     },
     promptInput: {
       borderWidth: 1,
-      borderColor: isDarkMode ? '#333333' : '#cccccc',
+      borderColor: theme.text ? '#333333' : '#cccccc',
       borderRadius: 8,
       padding: 12,
-      color: isDarkMode ? '#ffffff' : '#000000',
-      backgroundColor: isDarkMode ? '#333333' : '#f5f5f5',
+      color: theme.text ? '#ffffff' : '#000000',
+      backgroundColor: theme.text ? '#333333' : '#f5f5f5',
       maxHeight: 100,
     },
     promptActions: {
@@ -89,7 +89,7 @@ const VoiceScreen = () => {
     voiceHeading: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text ? '#ffffff' : '#000000',
       marginBottom: 8,
     },
     voiceScroll: {
@@ -99,7 +99,7 @@ const VoiceScreen = () => {
       padding: 16,
       borderRadius: 8,
       marginRight: 8,
-      backgroundColor: isDarkMode ? '#333333' : '#e0e0e0',
+      backgroundColor: theme.text ? '#333333' : '#e0e0e0',
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 2,
@@ -110,7 +110,7 @@ const VoiceScreen = () => {
       borderColor: '#ff7e5f',
     },
     voiceOptionText: {
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text ? '#ffffff' : '#000000',
       marginLeft: 8,
     },
     generateButton: {
@@ -171,20 +171,20 @@ const VoiceScreen = () => {
             value={prompt}
             onChangeText={setPrompt}
             placeholder="Enter your prompt here..."
-            placeholderTextColor={isDarkMode ? '#888888' : '#666666'}
+            placeholderTextColor={theme.text ? '#888888' : '#666666'}
             multiline
             maxLength={6000}
           />
           <View style={styles.promptActions}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ color: prompt.length >= 6000 ? 'red' : isDarkMode ? '#ffffff' : '#000000' }}>
+              <Text style={{ color: prompt.length >= 6000 ? 'red' : theme.text ? '#ffffff' : '#000000' }}>
                 {prompt.length}/6000
               </Text>
               {prompt.length >= 6000 && (
                 <Text style={{ color: 'red', fontSize: 10, marginLeft: 4 }}>Max characters reached</Text>
               )}
               <TouchableOpacity onPress={() => setPrompt('')} style={{ marginLeft: 8 }}>
-                <Icon name="highlight-off" size={20} color={isDarkMode ? '#ffffff' : '#000000'} />
+                <Icon name="highlight-off" size={20} color={theme.text ? '#ffffff' : '#000000'} />
               </TouchableOpacity>
             </View>
           </View>
@@ -203,7 +203,7 @@ const VoiceScreen = () => {
                   <Icon 
                     name={playingVoice === voice ? "pause" : "play-arrow"} 
                     size={24} 
-                    color={isDarkMode ? '#ffffff' : '#000000'} 
+                    color={theme.text ? '#ffffff' : '#000000'} 
                     onPress={() => handlePlayVoice(voice)}
                   />
                   <Text style={styles.voiceOptionText}>{voice}</Text>
