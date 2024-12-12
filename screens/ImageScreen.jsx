@@ -1,6 +1,6 @@
 // screens/ImageScreen.jsx
 
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { 
   SafeAreaView, 
   View, 
@@ -12,7 +12,7 @@ import {
   Dimensions,
   Alert
 } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
+import { useSelector } from 'react-redux';
 import CustomHeader from '../components/CustomHeader';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -21,7 +21,7 @@ import * as ImagePicker from 'expo-image-picker';
 const { width } = Dimensions.get('window');
 
 const ImageScreen = () => {
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useSelector((state) => state.theme);
   const [isPro, setIsPro] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [selectedStyle, setSelectedStyle] = useState(null);
@@ -44,13 +44,13 @@ const ImageScreen = () => {
       borderColor: isPro ? 'transparent' : '#ff7e5f',
     },
     proButtonText: {
-      color: isPro ? '#ffffff' : (theme.text ? '#ffffff' : '#000000'),
+      color: isPro ? '#ffffff' : theme.text,
       textAlign: 'center',
     },
     heading: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: theme.text ? '#ffffff' : '#000000',
+      color: theme.text,
       marginBottom: 16,
     },
     promptContainer: {
@@ -58,11 +58,11 @@ const ImageScreen = () => {
     },
     promptInput: {
       borderWidth: 1,
-      borderColor: theme.text ? '#333333' : '#cccccc',
+      borderColor: theme.border,
       borderRadius: 8,
       padding: 12,
-      color: theme.text ? '#ffffff' : '#000000',
-      backgroundColor: theme.text ? '#333333' : '#f5f5f5',
+      color: theme.text,
+      backgroundColor: theme.inputBackground,
       maxHeight: 100,
     },
     promptActions: {
@@ -90,7 +90,7 @@ const ImageScreen = () => {
     styleHeading: {
       fontSize: 18,
       fontWeight: 'bold',
-      color: theme.text ? '#ffffff' : '#000000',
+      color: theme.text,
       marginBottom: 8,
     },
     styleScroll: {
@@ -100,7 +100,7 @@ const ImageScreen = () => {
       padding: 16,
       borderRadius: 8,
       marginRight: 8,
-      backgroundColor: theme.text ? '#333333' : '#e0e0e0',
+      backgroundColor: theme.inputBackground,
       alignItems: 'center',
       justifyContent: 'center',
       borderWidth: 2,
@@ -110,7 +110,7 @@ const ImageScreen = () => {
       borderColor: '#ff7e5f',
     },
     styleOptionText: {
-      color: theme.text ? '#ffffff' : '#000000',
+      color: theme.text,
       marginTop: 4,
     },
     generateButton: {
@@ -181,24 +181,22 @@ const ImageScreen = () => {
             value={prompt}
             onChangeText={setPrompt}
             placeholder="Enter your prompt here..."
-            placeholderTextColor={theme.text ? '#888888' : '#666666'}
+            placeholderTextColor={theme.placeholder}
             multiline
             maxLength={4000}
           />
           <View style={styles.promptActions}>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ color: prompt.length >= 4000 ? 'red' : theme.text ? '#ffffff' : '#000000' }}>
+              <Text style={{ color: prompt.length >= 4000 ? 'red' : theme.text }}>
                 {prompt.length}/4000
               </Text>
               {prompt.length >= 4000 && (
                 <Text style={{ color: 'red', fontSize: 10, marginLeft: 4 }}>Max characters reached</Text>
               )}
               <TouchableOpacity onPress={() => setPrompt('')} style={{ marginLeft: 8 }}>
-                <Icon name="highlight-off" size={20} color={theme.text ? '#ffffff' : '#000000'} />
+                <Icon name="highlight-off" size={20} color={theme.text} />
               </TouchableOpacity>
             </View>
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8 }}>
             <TouchableOpacity style={styles.actionButton} onPress={handleImageUpload}>
               <LinearGradient
                 colors={['#43cea2', '#185a9d']}
@@ -234,7 +232,7 @@ const ImageScreen = () => {
                   style={[styles.styleOption, selectedStyle === style && styles.styleOptionSelected]}
                   onPress={() => setSelectedStyle(style)}
                 >
-                  <Icon name="brush" size={24} color={theme.text ? '#ffffff' : '#000000'} />
+                  <Icon name="brush" size={24} color={theme.text} />
                   <Text style={styles.styleOptionText}>{style}</Text>
                 </TouchableOpacity>
               ))}
@@ -249,7 +247,6 @@ const ImageScreen = () => {
             end={{ x: 1, y: 1 }}
             style={styles.generateButton}
           >
-
             <Text style={styles.generateButtonText}>Create </Text>
             <Icon name="arrow-forward" size={24} color="#ffffff" />
           </LinearGradient>

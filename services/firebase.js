@@ -19,13 +19,17 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
+// Initialize Firebase app
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase services
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage)
-});
+let auth;
+if (!auth) {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage)
+  });
+}
+
 const firestore = getFirestore(app);
 const storage = getStorage(app);
 
@@ -45,6 +49,17 @@ export const getUserData = async (userId) => {
 // Function to update user data
 export const updateUserData = async (userId, data) => {
   await updateDoc(doc(firestore, 'users', userId), data);
+};
+
+export const updateUserName = async (userId, newName) => {
+  try {
+    const userDocRef = doc(firestore, 'users', userId);
+    await updateDoc(userDocRef, { name: newName });
+    console.log('User name updated successfully');
+  } catch (error) {
+    console.error('Error updating user name:', error);
+    throw error;
+  }
 };
 
 export { auth, firestore, storage };

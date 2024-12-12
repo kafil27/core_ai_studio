@@ -1,9 +1,9 @@
 // screens/HomeScreen.jsx
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View, Text, ScrollView, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ThemeContext } from '../context/ThemeContext';
+import { useSelector } from 'react-redux';
 import HomeScreenStyles from '../styles/HomeScreenStyles';
 import Animated, { 
   useSharedValue, 
@@ -25,7 +25,7 @@ const { width } = Dimensions.get('window');
 const HomeScreen = ({ route }) => {
   const navigation = useNavigation();
   const { username } = route.params || { username: 'User' };
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useSelector((state) => state.theme);
   const styles = HomeScreenStyles(theme);
 
   const [userEmail, setUserEmail] = useState('');

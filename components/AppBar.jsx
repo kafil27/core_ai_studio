@@ -1,12 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { ThemeContext } from '../context/ThemeContext';
 
 const AppBar = ({ userEmail }) => {
   const navigation = useNavigation();
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useSelector((state) => state.theme);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>

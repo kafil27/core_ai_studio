@@ -1,7 +1,7 @@
 // screens/ChatScreen.jsx
 
 // Import necessary libraries and components from React and React Native
-import React, { useContext, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   SafeAreaView, 
   View, 
@@ -14,7 +14,7 @@ import {
   StyleSheet,
   Dimensions
 } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
+import { useSelector } from 'react-redux';
 import CustomHeader from '../components/CustomHeader';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ChatMessage from '../components/ChatMessage';
@@ -29,7 +29,7 @@ import Animated, {
 const { width } = Dimensions.get('window');
 
 const ChatScreen = () => {
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useSelector((state) => state.theme);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [selectedModel, setSelectedModel] = useState('gpt-3.5-turbo');
@@ -39,6 +39,7 @@ const ChatScreen = () => {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
+      backgroundColor: theme.background,
     },
     content: {
       flex: 1,
@@ -157,7 +158,7 @@ const ChatScreen = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={styles.container}>
       <CustomHeader title="Chat" />
       <View style={styles.modelSelectorContainer}>
         <ModelSelector

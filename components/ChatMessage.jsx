@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
+import { useSelector } from 'react-redux';
 
 const ChatMessage = ({ message }) => {
-  const { isDarkMode } = useContext(ThemeContext);
+  const { theme } = useSelector((state) => state.theme);
 
   const styles = StyleSheet.create({
     container: {
@@ -13,8 +13,8 @@ const ChatMessage = ({ message }) => {
     },
     bubble: {
       backgroundColor: message.isUser 
-        ? (isDarkMode ? '#2196F3' : '#1976D2')
-        : (isDarkMode ? '#333333' : '#f0f0f0'),
+        ? (theme === 'dark' ? '#2196F3' : '#1976D2')
+        : (theme === 'dark' ? '#333333' : '#f0f0f0'),
       padding: 12,
       borderRadius: 16,
       borderTopLeftRadius: message.isUser ? 16 : 4,
@@ -23,12 +23,12 @@ const ChatMessage = ({ message }) => {
     text: {
       color: message.isUser 
         ? '#ffffff'
-        : (isDarkMode ? '#ffffff' : '#000000'),
+        : theme.text,
       fontSize: 16,
     },
     timestamp: {
       fontSize: 12,
-      color: isDarkMode ? '#888888' : '#666666',
+      color: theme.placeholderText,
       marginTop: 4,
       alignSelf: message.isUser ? 'flex-end' : 'flex-start',
     },

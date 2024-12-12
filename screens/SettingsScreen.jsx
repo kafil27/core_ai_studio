@@ -1,105 +1,95 @@
 // screens/SettingsScreen.jsx
 
-import React, { useContext, useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, StyleSheet, Switch, ScrollView } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
-import { darkTheme } from '../context/themes';
+import React from 'react';
+import { SafeAreaView, View, Text, StyleSheet, ScrollView, TouchableOpacity, Vibration } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { toggleNotifications, toggleSound } from '../reducers/settingsReducer';
+import { setTheme } from '../reducers/themeReducer';
 import CustomHeader from '../components/CustomHeader';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { lightTheme, darkTheme } from '../context/themes';
 
 const SettingsScreen = () => {
-  const { theme, toggleTheme } = useContext(ThemeContext);
-  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
-  const [isSoundEnabled, setIsSoundEnabled] = useState(true);
+  const dispatch = useDispatch();
+  const { notificationsEnabled, soundEnabled } = useSelector((state) => state.settings);
+  const { theme } = useSelector((state) => state.theme);
 
-  useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const storedSettings = await AsyncStorage.getItem('appSettings');
-        if (storedSettings) {
-          const settings = JSON.parse(storedSettings);
-          setIsNotificationsEnabled(settings.isNotificationsEnabled);
-          setIsSoundEnabled(settings.isSoundEnabled);
-        }
-      } catch (error) {
-        console.error('Failed to load settings:', error);
-      }
-    };
+  const themeTogglePosition = useSharedValue(theme === darkTheme ? 1 : 0);
+  const notificationTogglePosition = useSharedValue(notificationsEnabled ? 1 : 0);
+  const soundTogglePosition = useSharedValue(soundEnabled ? 1 : 0);
 
-    loadSettings();
-  }, []);
-
-  const saveSettings = async (newSettings) => {
-    try {
-      await AsyncStorage.setItem('appSettings', JSON.stringify(newSettings));
-    } catch (error) {
-      console.error('Failed to save settings:', error);
-    }
+  const handleThemeToggle = () => {
+    const newTheme = theme === darkTheme ? 'light' : 'dark';
+    dispatch(setTheme(newTheme));
+    themeTogglePosition.value = withSpring(newTheme === 'dark' ? 1 : 0);
+    Vibration.vibrate(50);
   };
 
-  const handleToggleNotifications = () => {
-    const newValue = !isNotificationsEnabled;
-    setIsNotificationsEnabled(newValue);
-    saveSettings({ isNotificationsEnabled: newValue, isSoundEnabled });
+  const handleNotificationToggle = () => {
+    dispatch(toggleNotifications());
+    notificationTogglePosition.value = withSpring(notificationsEnabled ? 0 : 1);
+    Vibration.vibrate(50);
   };
 
-  const handleToggleSound = () => {
-    const newValue = !isSoundEnabled;
-    setIsSoundEnabled(newValue);
-    saveSettings({ isNotificationsEnabled, isSoundEnabled: newValue });
+  const handleSoundToggle = () => {
+    dispatch(toggleSound());
+    soundTogglePosition.value = withSpring(soundEnabled ? 0 : 1);
+    Vibration.vibrate(50);
   };
+
+  const themeToggleStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: themeTogglePosition.value * 24 }],
+  }));
+
+  const notificationToggleStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: notificationTogglePosition.value * 24 }],
+  }));
+
+  const soundToggleStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: soundTogglePosition.value * 24 }],
+  }));
+
+  const toggleBackgroundStyle = (enabled) => ({
+    backgroundColor: enabled ? '#4caf50' : '#ccc',
+  });
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <CustomHeader title="Settings" />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.settingItem}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Icon name="brightness-6" size={24} color={theme.text} />
-            <Text style={[styles.settingText, { color: theme.text }]}>Dark Mode</Text>
+          <Text style={[styles.settingText, { color: theme.text }]}>Theme</Text>
+          <View style={styles.toggleContainer}>
+            <Icon name="wb-sunny" size={20} color={theme === lightTheme ? theme.text : 'gray'} />
+            <TouchableOpacity onPress={handleThemeToggle} style={[styles.toggleBackground, toggleBackgroundStyle(theme === darkTheme)]}>
+              <Animated.View style={[styles.toggleCircle, themeToggleStyle]} />
+            </TouchableOpacity>
+            <Icon name="nights-stay" size={22} color={theme === darkTheme ? theme.text : 'gray'} />
           </View>
-          <Switch
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            thumbColor={theme === darkTheme ? '#f5dd4b' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleTheme}
-            value={theme === darkTheme}
-            style={styles.toggle}
-          />
         </View>
 
         <View style={styles.settingItem}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Icon name="notifications" size={24} color={theme.text} />
-            <Text style={[styles.settingText, { color: theme.text }]}>Notifications</Text>
+          <Text style={[styles.settingText, { color: theme.text }]}>Notifications</Text>
+          <View style={styles.toggleContainer}>
+            <Icon name="notifications-off" size={20} color={notificationsEnabled ? 'gray' : theme.text} />
+            <TouchableOpacity onPress={handleNotificationToggle} style={[styles.toggleBackground, toggleBackgroundStyle(notificationsEnabled)]}>
+              <Animated.View style={[styles.toggleCircle, notificationToggleStyle]} />
+            </TouchableOpacity>
+            <Icon name="notifications" size={22} color={notificationsEnabled ? theme.text : 'gray'} />
           </View>
-          <Switch
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            thumbColor={isNotificationsEnabled ? '#f5dd4b' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={handleToggleNotifications}
-            value={isNotificationsEnabled}
-            style={styles.toggle}
-          />
         </View>
 
         <View style={styles.settingItem}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Icon name="volume-up" size={24} color={theme.text} />
-            <Text style={[styles.settingText, { color: theme.text }]}>Sound</Text>
+          <Text style={[styles.settingText, { color: theme.text }]}>Sound</Text>
+          <View style={styles.toggleContainer}>
+            <Icon name="volume-off" size={20} color={soundEnabled ? 'gray' : theme.text} />
+            <TouchableOpacity onPress={handleSoundToggle} style={[styles.toggleBackground, toggleBackgroundStyle(soundEnabled)]}>
+              <Animated.View style={[styles.toggleCircle, soundToggleStyle]} />
+            </TouchableOpacity>
+            <Icon name="volume-up" size={22} color={soundEnabled ? theme.text : 'gray'} />
           </View>
-          <Switch
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            thumbColor={isSoundEnabled ? '#f5dd4b' : '#f4f3f4'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={handleToggleSound}
-            value={isSoundEnabled}
-            style={styles.toggle}
-          />
         </View>
-
-        {/* Add more settings options as needed */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -118,15 +108,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: 12,
-    borderBottomWidth: 1,
+    borderBottomWidth: 0.2
+    ,
     borderBottomColor: '#e0e0e0',
   },
   settingText: {
-    fontSize: 18,
-    marginLeft: 10,
+    fontSize: 20,
+    flex: 1,
   },
-  toggle: {
-    transform: [{ scale: 1.2 }],
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: 100,
+  },
+  toggleBackground: {
+    width: 50,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  toggleCircle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    position: 'absolute',
+    left: 0,
   },
 });
 

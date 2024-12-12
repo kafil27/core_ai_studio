@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
+import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const CustomHeader = ({ title, isHomeScreen = false }) => {
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useSelector((state) => state.theme);
   const navigation = useNavigation();
 
   return (

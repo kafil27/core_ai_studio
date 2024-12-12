@@ -1,13 +1,13 @@
 // components/RecentActivity.jsx
 
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
+import { useSelector } from 'react-redux';
 import { styles } from '../styles/RecentActivityStyles';
-import { auth, getUserData } from '../services/firebase'; // Import getUserData
+import { auth, getUserData } from '../services/firebase';
 
 const RecentActivity = () => {
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useSelector((state) => state.theme);
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
 

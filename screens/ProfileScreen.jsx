@@ -1,18 +1,18 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, TextInput, ScrollView, Alert, Image } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, View, Text, TouchableOpacity, StyleSheet, Image, ScrollView, TextInput, Alert } from 'react-native';
+import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as ImagePicker from 'expo-image-picker';
 import CustomHeader from '../components/CustomHeader';
-import { auth, getUserData, updateUserData } from '../services/firebase';
+import { auth, getUserData, updateUserName } from '../services/firebase';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 const ProfileScreen = () => {
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useSelector((state) => state.theme);
   const [userData, setUserData] = useState(null);
-  const [tokens, setTokens] = useState(100); // Example token count
-  const [apiKey, setApiKey] = useState('');
-  const [isEditingApiKey, setIsEditingApiKey] = useState(false);
-  const [name, setName] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState('');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -22,7 +22,7 @@ const ProfileScreen = () => {
           const data = await getUserData(user.uid);
           if (data) {
             setUserData(data);
-            setName(data.name);
+            setNewName(data.name);
           }
         }
       } catch (error) {
@@ -33,34 +33,39 @@ const ProfileScreen = () => {
     fetchUserData();
   }, []);
 
-  const handleUpdateUserData = async () => {
+  const handleEditName = async () => {
     try {
-      const user = auth.currentUser;
-      if (user) {
-        await updateUserData(user.uid, { name });
-        alert('Profile updated successfully!');
-      }
+      await updateUserName(auth.currentUser.uid, newName);
+      setUserData({ ...userData, name: newName });
+      setIsEditing(false);
     } catch (error) {
-      console.error("Error updating user data: ", error);
-      alert('Failed to update profile.');
+      console.error("Error updating user name: ", error);
     }
   };
 
-  const handleEditProfile = () => {
-    Alert.alert('Edit Profile', 'Profile editing is not implemented yet.');
+  const formatDate = (timestamp) => {
+    const date = new Date(timestamp.seconds * 1000);
+    return isNaN(date) ? 'N/A' : date.toLocaleDateString();
   };
 
-  const handleBuyTokens = () => {
-    Alert.alert('Buy Tokens', 'Token purchasing is not implemented yet.');
-  };
+  const pickImage = async () => {
+    let result = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (result.granted === false) {
+      Alert.alert("Permission to access gallery is required!");
+      return;
+    }
 
-  const handleSaveApiKey = async () => {
-    try {
-      await firestore.collection('users').doc(auth.currentUser.uid).update({ apiKey });
-      Alert.alert('Success', 'API Key updated successfully');
-      setIsEditingApiKey(false);
-    } catch (error) {
-      Alert.alert('Error', error.message);
+    let pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!pickerResult.cancelled) {
+      // Here you would upload the image to your server or Firebase storage
+      // and update the user's profile picture URL in the database
+      console.log("Selected image URI: ", pickerResult.uri);
     }
   };
 
@@ -68,68 +73,63 @@ const ProfileScreen = () => {
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <CustomHeader title="Profile" />
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.avatarContainer}>
-          <View style={styles.avatar}>
-            {userData?.profilePicture ? (
-              <Image source={{ uri: userData.profilePicture }} style={styles.avatar} />
+        <LinearGradient
+          colors={theme.background === '#000000' ? ['#333', '#555'] : ['#fff', '#ddd']}
+          style={styles.profilePictureContainer}
+        >
+          {userData?.profilePicture ? (
+            <Image source={{ uri: userData.profilePicture }} style={styles.profilePicture} />
+          ) : (
+            <Icon name="account-circle" size={140} color={theme.text} />
+          )}
+          <TouchableOpacity style={styles.editIcon} onPress={pickImage}>
+            <Icon name="camera-alt" size={24} color={theme.text} />
+          </TouchableOpacity>
+        </LinearGradient>
+        <View style={styles.infoContainer}>
+          <View style={styles.infoItem}>
+            <Icon name="person" size={24} color={theme.text} />
+            {isEditing ? (
+              <TextInput
+                style={[styles.infoText, { color: theme.text }]}
+                value={newName}
+                onChangeText={setNewName}
+                onBlur={handleEditName}
+              />
             ) : (
-              <Icon name="account-circle" size={80} color={theme.text} />
+              <Text style={[styles.infoText, { color: theme.text }]}>{userData?.name || 'User'}</Text>
             )}
+            <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
+              <Icon name="edit" size={20} color={theme.text} />
+            </TouchableOpacity>
           </View>
-          <Text style={[styles.name, { color: theme.text }]}>{userData?.name || 'User'}</Text>
-          <Text style={[styles.email, { color: theme.placeholderText }]}>{userData?.email}</Text>
+          <View style={styles.infoItem}>
+            <Icon name="email" size={24} color={theme.text} />
+            <Text style={[styles.infoText, { color: theme.text }]}>{userData?.email || 'user@example.com'}</Text>
+          </View>
+          <View style={styles.infoItem}>
+            <Icon name="calendar-today" size={24} color={theme.text} />
+            <Text style={[styles.infoText, { color: theme.text }]}>
+              {userData?.signUpDate ? formatDate(userData.signUpDate) : 'N/A'}
+            </Text>
+          </View>
         </View>
-
-        <TouchableOpacity onPress={handleEditProfile} style={styles.button}>
+        <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.tokensContainer}>
           <LinearGradient
-            colors={['#6a11cb', '#2575fc']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.button}
+            colors={theme.background === '#000000' ? ['#555', '#777'] : ['#ddd', '#fff']}
+            style={styles.tokensBackground}
           >
-            <Icon name="edit" size={24} color={theme.buttonText} />
-            <Text style={styles.buttonText}>Edit Profile</Text>
+            <View style={styles.tokensInfo}>
+              <Icon name="star" size={24} color={theme.text} />
+              <Text style={[styles.tokensText, { color: theme.text }]}>
+                {userData?.tokens || 0} Tokens
+              </Text>
+            </View>
+            <TouchableOpacity style={styles.buyButton}>
+              <Text style={styles.buyButtonText}>Buy Tokens</Text>
+            </TouchableOpacity>
           </LinearGradient>
-        </TouchableOpacity>
-
-        <View style={styles.section}>
-          <Text style={[styles.sectionHeading, { color: theme.text }]}>Tokens</Text>
-          <Text style={[styles.tokenText, { color: theme.text }]}>Available Tokens: {tokens}</Text>
-          <TouchableOpacity onPress={handleBuyTokens} style={[styles.button, { marginTop: 10 }]}>
-            <LinearGradient
-              colors={['#ff7e5f', '#feb47b']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.button}
-            >
-              <Icon name="add-circle-outline" size={24} color={theme.buttonText} />
-              <Text style={styles.buttonText}>Buy More Tokens</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={[styles.sectionHeading, { color: theme.text }]}>Custom AI API</Text>
-          <TextInput
-            style={[styles.apiInput, { borderColor: theme.border, color: theme.text, backgroundColor: theme.background }]}
-            value={apiKey}
-            onChangeText={setApiKey}
-            placeholder="Enter your custom API key"
-            placeholderTextColor={theme.placeholderText}
-            editable={isEditingApiKey}
-          />
-          <TouchableOpacity onPress={() => setIsEditingApiKey(!isEditingApiKey)} style={[styles.button, { marginTop: 10 }]}>
-            <LinearGradient
-              colors={['#43cea2', '#185a9d']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.button}
-            >
-              <Icon name={isEditingApiKey ? "save" : "edit"} size={24} color={theme.buttonText} />
-              <Text style={styles.buttonText}>{isEditingApiKey ? "Save API Key" : "Edit API Key"}</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
+        </Animated.View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -138,66 +138,76 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   content: {
+    alignItems: 'center',
     padding: 16,
   },
-  avatarContainer: {
-    alignItems: 'center',
-    marginVertical: 20,
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#ccc',
+  profilePictureContainer: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    overflow: 'hidden',
+    marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
   },
-  name: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginVertical: 10,
+  profilePicture: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
   },
-  email: {
-    fontSize: 16,
+  editIcon: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 12,
+    padding: 4,
   },
-  button: {
-    marginTop: 20,
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
+  infoContainer: {
     width: '100%',
+    paddingHorizontal: 20,
+    marginBottom: 20,
   },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
   },
-  section: {
-    marginVertical: 20,
-    padding: 16,
-    borderRadius: 8,
-    backgroundColor: '#f5f5f5',
-  },
-  sectionHeading: {
+  infoText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    marginLeft: 10,
+    flex: 1,
+  },
+  tokensContainer: {
+    width: '100%',
+    paddingHorizontal: 20,
+  },
+  tokensBackground: {
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  tokensInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 10,
   },
-  tokenText: {
-    fontSize: 16,
+  tokensText: {
+    fontSize: 18,
+    marginLeft: 10,
   },
-  apiInput: {
-    borderWidth: 1,
+  buyButton: {
+    backgroundColor: '#4caf50',
     borderRadius: 8,
-    padding: 10,
-    marginTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  buyButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

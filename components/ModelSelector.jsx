@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { Menu, MenuItem } from 'react-native-material-menu';
-import { ThemeContext } from '../context/ThemeContext';
+import { useSelector } from 'react-redux';
 
 const ModelSelector = ({ selectedModel, onSelectModel }) => {
   const [visible, setVisible] = useState(false);
-  const { isDarkMode } = React.useContext(ThemeContext);
+  const { theme } = useSelector((state) => state.theme);
 
   const models = [
     { id: 'gpt-3.5-turbo', name: 'ChatGPT 3.5' },
@@ -24,18 +24,18 @@ const ModelSelector = ({ selectedModel, onSelectModel }) => {
       alignItems: 'center',
       padding: 8,
       borderRadius: 8,
-      backgroundColor: isDarkMode ? '#333333' : '#e0e0e0',
+      backgroundColor: theme.background,
     },
     buttonText: {
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text,
       marginRight: 8,
       fontSize: 14,
     },
     menu: {
-      backgroundColor: isDarkMode ? '#333333' : '#ffffff',
+      backgroundColor: theme.background,
     },
     menuItem: {
-      color: isDarkMode ? '#ffffff' : '#000000',
+      color: theme.text,
     },
   });
 
@@ -54,7 +54,7 @@ const ModelSelector = ({ selectedModel, onSelectModel }) => {
             <Icon
               name="arrow-drop-down"
               size={24}
-              color={isDarkMode ? '#ffffff' : '#000000'}
+              color={theme.text}
             />
           </TouchableOpacity>
         }

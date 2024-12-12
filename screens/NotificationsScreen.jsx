@@ -1,13 +1,13 @@
 // screens/NotificationsScreen.jsx
 
-import React, { useContext } from 'react';
+import React from 'react';
 import { SafeAreaView, ScrollView, Text } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
+import { useSelector } from 'react-redux';
 import CommonScreenStyles from '../styles/CommonScreenStyles';
 
 const NotificationsScreen = () => {
-  const { isDarkMode } = useContext(ThemeContext);
-  const styles = CommonScreenStyles(isDarkMode);
+  const { theme } = useSelector((state) => state.theme);
+  const styles = CommonScreenStyles(theme);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -15,7 +15,7 @@ const NotificationsScreen = () => {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
       >
-        <Text style={[styles.text, { color: isDarkMode ? 'white' : 'black' }]}>
+        <Text style={[styles.text, { color: theme.text }]}>
           This is the Notifications Screen
         </Text>
       </ScrollView>

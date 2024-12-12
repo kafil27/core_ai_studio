@@ -1,6 +1,6 @@
 // screens/VoiceScreen.jsx
 
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { 
   SafeAreaView, 
   View, 
@@ -12,7 +12,7 @@ import {
   Dimensions,
   Alert
 } from 'react-native';
-import { ThemeContext } from '../context/ThemeContext';
+import { useSelector } from 'react-redux';
 import CustomHeader from '../components/CustomHeader';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -20,7 +20,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 const { width } = Dimensions.get('window');
 
 const VoiceScreen = () => {
-  const { theme } = useContext(ThemeContext);
+  const { theme } = useSelector((state) => state.theme);
   const [isAdvanced, setIsAdvanced] = useState(false);
   const [prompt, setPrompt] = useState('');
   const [selectedVoice, setSelectedVoice] = useState(null);
