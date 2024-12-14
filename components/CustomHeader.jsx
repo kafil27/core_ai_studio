@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const CustomHeader = ({ title, isHomeScreen = false }) => {
+const CustomHeader = ({ title, isHomeScreen = false, showEditButton = false, isEditing, setIsEditing }) => {
   const { theme } = useSelector((state) => state.theme);
   const navigation = useNavigation();
 
@@ -21,6 +21,14 @@ const CustomHeader = ({ title, isHomeScreen = false }) => {
         />
       </TouchableOpacity>
       <Text style={[styles.title, { color: theme.text }]}>{title}</Text>
+      {showEditButton && (
+        <TouchableOpacity
+          style={[styles.editButton, { borderColor: isEditing ? '#4caf50' : '#ccc', borderWidth: 1 }]}
+          onPress={() => setIsEditing(!isEditing)}
+        >
+          <Icon name="edit" size={24} color={theme.text} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -39,6 +47,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     flex: 1,
+  },
+  editButton: {
+    borderRadius: 20,
+    padding: 8,
   },
 });
 

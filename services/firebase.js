@@ -40,7 +40,7 @@ isSupported().then(supported => {
   }
 });
 
-// Function to get user data
+// Function to get user dataf
 export const getUserData = async (userId) => {
   const userDoc = await getDoc(doc(firestore, 'users', userId));
   return userDoc.exists() ? userDoc.data() : null;
